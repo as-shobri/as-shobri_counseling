@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>As-Shobri — Layanan Konseling Mahasiswa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F6F1; --surface:#FFFFFF; --surface-2:#E9EFE6; --ink:#15271F; --ink-2:#4A5C53; --line:#D3DCD1;
+  --green:#1F4D3A; --green-deep:#173C2D; --on-green:#FFFFFF; --sage:#8FA98C; --sage-soft:#E1EADD;
+  --gold:#8A6A2C; --gold-light:#E6CF9C; --gold-soft:#F4ECDC; --alert:#A8323A; --alert-soft:#F7E4E4;
+  --sans:"Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --arab:"Amiri", "Traditional Arabic", "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1A15; --surface:#16241D; --surface-2:#1C2D25; --ink:#E6EEE8; --ink-2:#A5B6AC; --line:#2A3D33;
+    --green:#7FBF9A; --green-deep:#12291F; --on-green:#0F1A15; --sage:#6F8C6C; --sage-soft:#1F3329;
+    --gold:#D6B676; --gold-soft:#2C2819; --alert:#E58A8A; --alert-soft:#341C1E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1A15; --surface:#16241D; --surface-2:#1C2D25; --ink:#E6EEE8; --ink-2:#A5B6AC; --line:#2A3D33;
+  --green:#7FBF9A; --green-deep:#12291F; --on-green:#0F1A15; --sage:#6F8C6C; --sage-soft:#1F3329;
+  --gold:#D6B676; --gold-soft:#2C2819; --alert:#E58A8A; --alert-soft:#341C1E;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:calc(76px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--gold-light);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+h1,h2,h3{letter-spacing:-.02em;line-height:1.15;margin:0}
+h2{font-size:clamp(28px,3.6vw,40px);font-weight:800}
+h3{font-size:19px;font-weight:700;letter-spacing:-.01em}
+p{margin:0}
+.lead{font-size:18px;color:var(--ink-2);max-width:62ch;margin-top:12px}
+section{padding:84px 0}
+.sec-head{margin-bottom:36px}
+.ph{background:var(--gold-soft);color:var(--gold);border-radius:4px;padding:0 4px;font-weight:600}
+
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:20px;height:66px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex:none}
+.logo i{width:36px;height:36px;border-radius:50%;background:var(--green);color:var(--gold-light);display:grid;place-items:center;font-style:normal;font-family:var(--arab);font-size:20px;line-height:1}
+.logo b{display:block;font-size:16px;line-height:1.15}
+.logo small{display:block;font-size:12px;color:var(--ink-2);line-height:1.2}
+nav.top{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin-left:auto;align-items:center}
+nav.top::-webkit-scrollbar{display:none}
+nav.top a{text-decoration:none;font-size:14px;font-weight:600;color:var(--ink-2);padding:8px 11px;border-radius:8px;white-space:nowrap}
+nav.top a:hover{color:var(--ink);background:var(--surface-2)}
+nav.top a.cta-nav{background:var(--green);color:var(--on-green);margin-left:6px}
+@media (max-width:820px){
+  .bar{flex-direction:column;align-items:stretch;height:auto;gap:4px;padding:10px 0 6px}
+  nav.top{margin-left:-8px}
+  html{scroll-padding-top:calc(116px + env(safe-area-inset-top,0px))}
+}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;padding:13px 20px;font-weight:700;font-size:15px;text-decoration:none;border:0}
+.btn.solid{background:var(--green);color:var(--on-green)}
+.btn.gold{background:var(--gold-light);color:#173C2D}
+.btn.line{border:1.5px solid rgba(255,255,255,.45);color:#fff}
+.btn.outline{border:1.5px solid var(--line);color:var(--green);background:transparent}
+.btn.outline:hover{border-color:var(--green)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* hero */
+.hero{background:var(--green-deep);color:#fff;padding:0;position:relative;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.2fr .9fr;gap:48px;align-items:center;padding-top:76px;padding-bottom:84px;position:relative}
+.hero-kicker{color:var(--gold-light);font-weight:600;font-size:15px;margin-bottom:16px}
+.hero h1{font-size:clamp(36px,5.4vw,60px);font-weight:800;letter-spacing:-.03em;line-height:1.04}
+.hero .lead{color:rgba(255,255,255,.82)}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.hero-facts{display:flex;gap:28px;flex-wrap:wrap;margin-top:36px;font-size:14px;color:rgba(255,255,255,.75)}
+.hero-facts b{display:block;color:#fff;font-size:16px}
+.hero-card{border:1px solid rgba(230,207,156,.35);border-radius:24px;padding:32px 28px}
+.hero-card .ar{font-family:var(--arab);font-size:clamp(30px,3.4vw,40px);direction:rtl;text-align:right;line-height:1.7;color:var(--gold-light)}
+.hero-card .tr{margin-top:12px;color:rgba(255,255,255,.86);font-size:16px}
+.hero-card .src{margin-top:8px;font-size:13px;color:var(--gold-light)}
+.rings{position:absolute;right:-160px;bottom:-200px;width:540px;height:540px;border-radius:50%;border:1px solid rgba(230,207,156,.16);box-shadow:0 0 0 64px rgba(230,207,156,.03),0 0 0 128px rgba(230,207,156,.02);pointer-events:none}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr;padding-top:48px;padding-bottom:56px;gap:30px}}
+
+/* services */
+.svc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px}
+.card p{color:var(--ink-2);font-size:15.5px;margin-top:8px}
+.card .meta{margin-top:14px;font-size:13.5px;font-weight:600;color:var(--green)}
+.card svg{width:28px;height:28px;color:var(--green);margin-bottom:14px}
+@media (max-width:860px){.svc{grid-template-columns:1fr}}
+
+/* alur */
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;counter-reset:f}
+.flow li{counter-increment:f;border-top:3px solid var(--sage);padding-top:14px}
+.flow li::before{content:counter(f);display:block;font-size:26px;font-weight:800;color:var(--gold);line-height:1;margin-bottom:8px}
+.flow b{display:block;font-size:16px}
+.flow span{display:block;font-size:14.5px;color:var(--ink-2);margin-top:4px}
+@media (max-width:860px){.flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.flow{grid-template-columns:1fr}}
+
+/* counselors */
+.team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.person{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.person .top{display:flex;gap:14px;align-items:center}
+.person .ini{width:64px;height:64px;border-radius:50%;background:var(--sage-soft);color:var(--green);display:grid;place-items:center;font-weight:800;font-size:18px;flex:none;overflow:hidden}
+.person img.ini{object-fit:cover;object-position:center 25%;border:2px solid var(--gold-light)}
+.person b{display:block;font-size:16.5px;line-height:1.3}
+.person small{color:var(--ink-2);font-size:13.5px}
+.person .focus{display:flex;flex-wrap:wrap;gap:6px}
+.person .focus span{font-size:12.5px;font-weight:600;background:var(--surface-2);border-radius:999px;padding:4px 10px}
+.person .sched{font-size:14px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:10px}
+.person .sched b{display:inline;font-size:14px;color:var(--ink)}
+@media (max-width:860px){.team{grid-template-columns:1fr}}
+
+/* booking */
+.book-sec{background:var(--surface)}
+.book{display:grid;grid-template-columns:1.35fr .85fr;gap:36px;align-items:start}
+@media (max-width:900px){.book{grid-template-columns:1fr}}
+.form{display:flex;flex-direction:column;gap:20px}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:560px){.row2{grid-template-columns:1fr}}
+label.f,.f{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
+.hint{font-size:13px;color:var(--ink-2);margin-top:-2px;margin-bottom:8px}
+input[type=text],select,textarea{width:100%;border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:11px 13px}
+input[type=text]:focus,select:focus,textarea:focus{border-color:var(--green);outline:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 13px;font-size:14px;font-weight:600;line-height:1.25;text-align:left}
+.chip small{display:block;font-weight:500;font-size:12px;color:var(--ink-2)}
+.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:var(--on-green)}
+.chip[aria-pressed="true"] small{color:inherit;opacity:.85}
+.slots{max-height:260px;overflow:auto;padding:2px}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:var(--ink-2)}
+.consent input{width:20px;height:20px;accent-color:var(--green);margin-top:2px;flex:none}
+.err{color:var(--alert);font-size:14px;font-weight:600;min-height:1em}
+.summary{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:22px;position:sticky;top:96px}
+.summary dl{margin:12px 0 0}
+.summary dt{font-size:12.5px;font-weight:700;color:var(--ink-2);margin-top:10px}
+.summary dd{margin:2px 0 0;font-weight:600}
+.summary .note{font-size:13.5px;color:var(--ink-2);margin-top:16px}
+
+/* tools */
+.tools{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:stretch}
+.tool-main{background:var(--green-deep);color:#fff;border-radius:20px;padding:30px}
+.tool-main p{color:rgba(255,255,255,.8);margin-top:10px}
+.tool-main ul{margin:16px 0 24px;padding-left:20px;color:rgba(255,255,255,.88)}
+.tool-main li+li{margin-top:4px}
+.levels{display:flex;flex-direction:column;gap:10px}
+.lv{display:grid;grid-template-columns:92px 1fr;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:14.5px}
+.lv b{font-size:14px}
+.lv span{color:var(--ink-2)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+@media (max-width:860px){.tools{grid-template-columns:1fr}}
+
+/* principles & faq */
+.prin{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+@media (max-width:860px){.prin{grid-template-columns:1fr}}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:18px 0;font-weight:700;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:22px;line-height:1;color:var(--gold)}
+.faq details[open] summary::after{content:"–"}
+.faq details p{color:var(--ink-2);padding:0 0 18px;max-width:70ch}
+
+/* crisis */
+.crisis{background:var(--alert-soft);border:1.5px solid var(--alert);border-radius:20px;padding:28px 30px;display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:center}
+.crisis h3{color:var(--alert);font-size:21px}
+.crisis p{color:var(--ink);margin-top:8px;font-size:15.5px}
+.crisis .nums{display:flex;flex-direction:column;gap:10px}
+.crisis .nums a{display:flex;justify-content:space-between;gap:12px;background:var(--surface);border-radius:12px;padding:13px 16px;text-decoration:none;font-weight:700}
+.crisis .nums a span{font-weight:500;color:var(--ink-2);font-size:14px}
+@media (max-width:760px){.crisis{grid-template-columns:1fr}}
+
+footer{border-top:1px solid var(--line);padding:32px 0 44px;font-size:14px;color:var(--ink-2)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+/* psikoedukasi */
+.edu-sec{background:var(--surface)}
+.sub{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:0 0 18px}
+.sub h3{font-size:22px;text-wrap:balance}
+.sub p{color:var(--ink-2);font-size:15px;margin-top:4px;max-width:60ch}
+.sub + .chips{margin-bottom:20px}
+.reads{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+@media (max-width:980px){.reads{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.reads{grid-template-columns:1fr}}
+.read{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.read .tag{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gold);display:flex;justify-content:space-between;gap:10px}
+.read .tag span{letter-spacing:0;text-transform:none;font-weight:600;color:var(--ink-2)}
+.read h4{margin:0;font-size:18px;line-height:1.3;letter-spacing:-.01em;text-wrap:balance}
+.read > p{color:var(--ink-2);font-size:15.5px}
+.read details summary{list-style:none;cursor:pointer;font-weight:700;font-size:14.5px;color:var(--green);padding-top:6px}
+.read details summary::-webkit-details-marker{display:none}
+.read details summary::after{content:" →"}
+.read details[open] summary::after{content:" ↑"}
+.read details[open] summary{margin-bottom:10px}
+.rbody{font-size:15.5px;border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:10px}
+.rbody ul,.rbody ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.rbody .pair{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14.5px}
+.rbody .pair b{display:block;font-size:13px;color:var(--gold);margin-bottom:2px}
+.rbody .pair s{text-decoration:none;color:var(--ink-2);display:block}
+.rbody .pair em{font-style:normal;color:var(--green);font-weight:600;display:block;margin-top:4px}
+.rbody a{color:var(--green);font-weight:700}
+
+.breath{display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center;background:var(--green-deep);color:#fff;border-radius:20px;padding:32px;margin:64px 0}
+@media (max-width:820px){.breath{grid-template-columns:1fr;padding:26px 22px}}
+.breath .kick{color:var(--gold-light);font-weight:700;font-size:13px;letter-spacing:.07em;text-transform:uppercase}
+.breath h3{font-size:clamp(24px,3vw,30px);margin-top:6px}
+.breath > div > p{color:rgba(255,255,255,.82);margin-top:10px;max-width:52ch}
+.breath .f{margin-top:22px;color:rgba(255,255,255,.9)}
+.breath .chip{background:transparent;border-color:rgba(255,255,255,.3);color:#fff}
+.breath .chip[aria-pressed="true"]{background:var(--gold-light);border-color:var(--gold-light);color:#173C2D}
+.breath .chip:disabled{opacity:.5;cursor:not-allowed}
+.bstat{margin-top:14px;font-size:14px;color:rgba(255,255,255,.75);font-variant-numeric:tabular-nums}
+.orb-stage{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
+.orb-wrap{position:relative;width:min(260px,70vw);aspect-ratio:1;max-width:100%;display:grid;place-items:center}
+.orb-wrap::before{content:"";position:absolute;inset:0;border-radius:50%;border:1px dashed rgba(230,207,156,.35)}
+.orb{width:46%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 38% 34%,#F3E4BF,#C9A660 62%,#9C7C3C);box-shadow:0 0 50px rgba(230,207,156,.25);transform:scale(1);transition:transform 4s ease-in-out}
+.phase{font-weight:800;font-size:19px;margin-top:10px;font-variant-numeric:tabular-nums}
+.dz{font-family:var(--arab);font-size:32px;line-height:1.6;color:var(--gold-light);direction:rtl}
+.dzl{font-size:14px;color:rgba(255,255,255,.75)}
+
+.doas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:760px){.doas{grid-template-columns:1fr}}
+.doa{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.doa .when{font-size:13px;font-weight:700;color:var(--gold)}
+.doa .ar{font-family:var(--arab);font-size:25px;line-height:2;direction:rtl;text-align:right}
+.doa .tr{color:var(--ink-2);font-size:15.5px}
+.doa .foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:auto;border-top:1px solid var(--line);padding-top:12px;flex-wrap:wrap}
+.doa .src{font-size:13.5px;font-weight:700;color:var(--green)}
+.copy{border:1.5px solid var(--line);background:transparent;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--green)}
+.copy:hover{border-color:var(--green)}
+.edu-note{margin-top:28px;font-size:14px;color:var(--ink-2);background:var(--gold-soft);border-radius:12px;padding:14px 16px;max-width:80ch}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#beranda"><i>ص</i><span><b>As-Shobri</b><small>Layanan Konseling Mahasiswa</small></span></a>
+    <nav class="top" aria-label="Navigasi utama">
+      <a href="#layanan">Layanan</a>
+      <a href="#alur">Alur</a>
+      <a href="#konselor">Konselor</a>
+      <a href="#asesmen">Asesmen</a>
+      <a href="#psikoedukasi">Psikoedukasi</a>
+      <a href="#faq">Tanya jawab</a>
+      <a href="#daftar" class="cta-nav">Daftar sesi</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="beranda">
+  <div class="rings" aria-hidden="true"></div>
+  <div class="wrap">
+    <div>
+      <p class="hero-kicker" id="unitName"></p>
+      <h1>Ruang aman untuk bercerita, tanpa harus datang ke kampus.</h1>
+      <p class="lead">Konseling daring bersama konselor Bimbingan dan Konseling Islam untuk masalah akademik, skripsi, maupun pribadi. Gratis, rahasia, dan bisa dari mana saja.</p>
+      <div class="cta">
+        <a class="btn gold" href="#daftar">Daftar sesi konseling</a>
+        <a class="btn line" href="#asesmen">Cek kondisi dulu</a>
+      </div>
+      <div class="hero-facts">
+        <div><b>Zoom, Meet, WhatsApp</b>Media sesi</div>
+        <div><b>45–60 menit</b>Per sesi</div>
+        <div><b>Terjaga kerahasiaannya</b>Sesuai kode etik</div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="ar">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</div>
+      <p class="tr">"Ingatlah, hanya dengan mengingat Allah hati menjadi tenteram."</p>
+      <p class="src">QS. Ar-Ra'd: 28</p>
+    </div>
+  </div>
+</section>
+
+<section id="layanan">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Layanan yang tersedia</h2>
+      <p class="lead">Pilih bentuk bantuan yang paling sesuai. Jika ragu, daftar konseling individual saja dan konselor akan membantu menentukan langkah berikutnya.</p>
+    </div>
+    <div class="svc">
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+        <h3>Konseling individual</h3>
+        <p>Sesi pribadi bersama konselor untuk masalah akademik, pribadi, keluarga, atau karier.</p>
+        <div class="meta">1 sesi, 45–60 menit, daring</div>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0-4 10.5V17h8v-3.5A6 6 0 0 0 12 3zM9 21h6"/></svg>
+        <h3>Program CBT Islami 8 sesi</h3>
+        <p>Pendampingan terstruktur untuk kecemasan menghadapi skripsi: mengubah pola pikir, penguatan spiritual, dan langkah kecil yang nyata.</p>
+        <div class="meta">8 sesi, 1–2 kali seminggu</div>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>
+        <h3>Konsultasi singkat via chat</h3>
+        <p>Untuk pertanyaan ringan atau jika belum siap bertatap muka lewat video. Konselor dapat menyarankan sesi lanjutan bila perlu.</p>
+        <div class="meta">WhatsApp, pada jam layanan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="alur" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Alur layanan</h2>
+      <p class="lead">Dari mendaftar hingga tindak lanjut, semuanya dilakukan secara daring.</p>
+    </div>
+    <ol class="flow">
+      <li><b>Cek kondisi</b><span>Isi asesmen mandiri (opsional) untuk mengetahui tingkat kecemasan.</span></li>
+      <li><b>Daftar sesi</b><span>Pilih konselor, jadwal, dan media melalui formulir di bawah.</span></li>
+      <li><b>Konfirmasi</b><span>Admin menghubungi via WhatsApp untuk memastikan jadwal dan mengirim informed consent.</span></li>
+      <li><b>Sesi konseling</b><span>Bertemu konselor lewat Zoom, Google Meet, atau WhatsApp.</span></li>
+      <li><b>Tindak lanjut</b><span>Tugas rumah, sesi lanjutan, atau rujukan bila diperlukan.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="konselor" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Konselor kami</h2>
+      <p class="lead">Konselor berlatar Bimbingan dan Konseling Islam yang siap mendampingi. Jadwal di bawah adalah jam layanan rutin setiap pekan.</p>
+    </div>
+    <div class="team" id="team"></div>
+  </div>
+</section>
+
+<section class="book-sec" id="daftar">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Daftar sesi konseling</h2>
+      <p class="lead">Isi data singkat di bawah. Setelah menekan tombol kirim, WhatsApp akan terbuka dengan pesan pendaftaran yang sudah tersusun. Kamu tinggal menekan kirim.</p>
+    </div>
+    <div class="book">
+      <div class="form">
+        <div class="row2">
+          <div><label class="f" for="fName">Nama atau nama panggilan</label><input type="text" id="fName" autocomplete="nickname"></div>
+          <div><label class="f" for="fNim">NIM</label><input type="text" id="fNim" inputmode="numeric"></div>
+        </div>
+        <div class="row2">
+          <div><label class="f" for="fProdi">Program studi dan semester</label><input type="text" id="fProdi" placeholder="Contoh: BKI, semester 8"></div>
+          <div><label class="f" for="fTopic">Topik umum</label>
+            <select id="fTopic">
+              <option value="">Pilih topik</option>
+              <option>Akademik atau skripsi</option>
+              <option>Pribadi atau emosi</option>
+              <option>Keluarga</option>
+              <option>Relasi sosial</option>
+              <option>Karier dan masa depan</option>
+              <option>Belum yakin</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <span class="f">Layanan</span>
+          <div class="chips" id="fService"></div>
+        </div>
+        <div>
+          <span class="f">Konselor</span>
+          <div class="chips" id="fCounselor"></div>
+        </div>
+        <div>
+          <span class="f">Jadwal</span>
+          <p class="hint">Jadwal dalam 14 hari ke depan. Admin akan mengonfirmasi ketersediaannya.</p>
+          <div class="chips slots" id="fSlot"></div>
+        </div>
+        <div>
+          <span class="f">Media sesi</span>
+          <div class="chips" id="fMedia"></div>
+        </div>
+        <label class="consent"><input type="checkbox" id="fConsent"><span>Saya mengikuti layanan ini atas kemauan sendiri dan memahami bahwa isi konseling dijaga kerahasiaannya, kecuali jika ada risiko serius terhadap keselamatan diri atau orang lain.</span></label>
+        <p class="err" id="fErr" role="alert"></p>
+        <div class="cta" style="margin-top:0">
+          <button class="btn solid" id="fSend">Kirim lewat WhatsApp</button>
+          <a class="btn outline" id="formAlt" href="#" target="_blank" rel="noopener" hidden>Daftar lewat Google Form</a>
+        </div>
+      </div>
+      <aside class="summary" aria-live="polite">
+        <h3>Ringkasan pendaftaran</h3>
+        <dl id="sum"></dl>
+        <p class="note">Ceritakan masalahmu saat sesi, bukan di formulir ini. Data pendaftaran hanya dikirim ke admin layanan melalui WhatsApp dan tidak disimpan di website.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section id="asesmen">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Asesmen dan alat bantu mandiri</h2>
+      <p class="lead">Belum yakin perlu konseling? Mulai dari mengenali kondisimu sendiri. Hasilnya bisa kamu tunjukkan kepada konselor saat sesi pertama.</p>
+    </div>
+    <div class="tools">
+      <div class="tool-main">
+        <h3>Aplikasi As-Shobri</h3>
+        <p>Alat bantu CBT Islami yang bisa dipakai di HP maupun laptop, di antara sesi konseling.</p>
+        <ul>
+          <li>Asesmen kecemasan skripsi 10 butir dengan skor otomatis</li>
+          <li>Lembar kerja CBT untuk mengubah pikiran negatif</li>
+          <li>Jurnal refleksi harian dan grafik perkembangan</li>
+          <li>Panduan program 8 sesi dan tugas rumahnya</li>
+        </ul>
+        <a class="btn gold" id="appBtn" href="#" target="_blank" rel="noopener">Buka aplikasi As-Shobri</a>
+      </div>
+      <div>
+        <h3 style="margin-bottom:14px">Arti hasil asesmen</h3>
+        <div class="levels">
+          <div class="lv"><b><i class="dot" style="background:#3F8A5E"></i>Rendah</b><span>Pelajari <a href="#psikoedukasi" style="color:var(--green);font-weight:700">materi psikoedukasi</a>, alat bantu mandiri, dan jurnal refleksi.</span></div>
+          <div class="lv"><b><i class="dot" style="background:#C79A2E"></i>Sedang</b><span>Konseling individual dianjurkan.</span></div>
+          <div class="lv"><b><i class="dot" style="background:#C86A3A"></i>Tinggi</b><span>Daftar program CBT Islami 8 sesi.</span></div>
+          <div class="lv"><b><i class="dot" style="background:#A8323A"></i>Sangat tinggi</b><span>Segera daftar dan sebutkan hasilmu ke admin agar diprioritaskan.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="edu-sec" id="psikoedukasi">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Psikoedukasi Islami</h2>
+      <p class="lead">Bacaan singkat, latihan menenangkan diri, dan doa yang bisa kamu pakai kapan saja. Materi ini membantu memahami diri sendiri, terutama saat menghadapi tekanan kuliah dan skripsi.</p>
+    </div>
+
+    <div class="sub">
+      <div><h3>Bacaan singkat</h3><p>Masing-masing selesai dibaca dalam 2–4 menit.</p></div>
+    </div>
+    <div class="chips" id="eduFilter" role="group" aria-label="Saring bacaan berdasarkan topik"></div>
+
+    <div class="reads" id="reads">
+      <article class="read" data-tag="Kecemasan">
+        <div class="tag">Kecemasan <span>3 menit</span></div>
+        <h4>Cemas menghadapi skripsi itu wajar</h4>
+        <p>Kecemasan adalah sinyal bahwa sesuatu penting bagimu, bukan tanda kamu lemah.</p>
+        <details><summary>Baca selengkapnya</summary>
+          <div class="rbody">
+            <p>Kecemasan biasanya muncul dalam tiga bentuk:</p>
+            <ul>
+              <li><b>Tubuh:</b> jantung berdebar, tegang di bahu, sulit tidur, perut tidak nyaman.</li>
+              <li><b>Pikiran:</b> takut gagal, membandingkan diri dengan teman, membayangkan hal terburuk.</li>
+              <li><b>Perilaku:</b> menunda pekerjaan, menghindari dosen pembimbing, sibuk dengan hal lain.</li>
+            </ul>
+            <p>Cemas dalam kadar ringan justru membantu kita fokus. Ia menjadi masalah ketika berlangsung berminggu-minggu dan mulai mengganggu tidur, makan, ibadah, atau kuliah.</p>
+            <p><b>Coba sekarang:</b> tulis satu kalimat tentang hal yang paling kamu khawatirkan. Sering kali kekhawatiran terasa lebih kecil setelah diberi nama.</p>
+          </div>
+        </details>
+      </article>
+
+      <article class="read" data-tag="Pola pikir">
+        <div class="tag">Pola pikir <span>4 menit</span></div>
+        <h4>Mengenali pikiran yang memperberat</h4>
+        <p>Dalam CBT, perasaan dipengaruhi cara kita menafsirkan kejadian. Tafsiran itu bisa diuji dan diganti.</p>
+        <details><summary>Baca selengkapnya</summary>
+          <div class="rbody">
+            <p>Tiga pola pikir yang sering muncul pada mahasiswa tingkat akhir, beserta tandingannya dengan sikap husnuzan:</p>
+            <div class="pair"><b>Semua atau tidak sama sekali</b><s>"Kalau bab 2 belum sempurna, berarti saya gagal."</s><em>"Draf pertama memang untuk diperbaiki. Revisi adalah bagian dari proses."</em></div>
+            <div class="pair"><b>Membayangkan bencana</b><s>"Kalau proposal ditolak, saya tidak akan lulus."</s><em>"Ditolak berarti ada masukan. Saya bisa bertanya bagian mana yang perlu diubah."</em></div>
+            <div class="pair"><b>Menebak isi hati orang</b><s>"Dosen pasti menganggap saya bodoh."</s><em>"Saya tidak tahu isi hatinya. Mungkin beliau ingin tulisan saya lebih baik."</em></div>
+            <p>Lembar kerja untuk berlatih ada di <a href="#asesmen">aplikasi As-Shobri</a>.</p>
+          </div>
+        </details>
+      </article>
+
+      <article class="read" data-tag="Spiritual">
+        <div class="tag">Spiritual <span>3 menit</span></div>
+        <h4>Tawakal setelah ikhtiar</h4>
+        <p>Tawakal bukan menunggu tanpa berbuat. Ia datang setelah usaha yang sungguh-sungguh.</p>
+        <details><summary>Baca selengkapnya</summary>
+          <div class="rbody">
+            <p>Rasulullah ﷺ menasihati seorang sahabat agar mengikat untanya dahulu, lalu bertawakal (HR. Tirmidzi). Usaha ada di tangan kita, hasil ada dalam ketentuan Allah.</p>
+            <p>Ikhtiar yang efektif dimulai dari langkah kecil yang jelas:</p>
+            <ol>
+              <li>Ganti "kerjakan bab 3" dengan "baca dua jurnal dan catat lima poin".</li>
+              <li>Tentukan waktunya, misalnya setelah shalat Zuhur selama 40 menit.</li>
+              <li>Setelah selesai, ucapkan alhamdulillah dan serahkan hasilnya kepada Allah.</li>
+            </ol>
+            <p>Memisahkan apa yang bisa kamu kendalikan dari yang tidak bisa kamu kendalikan akan mengurangi beban pikiran.</p>
+          </div>
+        </details>
+      </article>
+
+      <article class="read" data-tag="Keseharian">
+        <div class="tag">Keseharian <span>3 menit</span></div>
+        <h4>Menjaga ritme: tidur, makan, shalat</h4>
+        <p>Tubuh yang lelah membuat pikiran lebih mudah cemas. Ritme harian adalah fondasi kesehatan mental.</p>
+        <details><summary>Baca selengkapnya</summary>
+          <div class="rbody">
+            <ul>
+              <li><b>Jadikan waktu shalat sebagai jangkar jadwal.</b> Bagi hari menjadi blok kerja setelah Subuh, setelah Zuhur, dan setelah Asar.</li>
+              <li><b>Kurangi begadang.</b> Kurang tidur membuat emosi lebih sensitif dan konsentrasi menurun.</li>
+              <li><b>Bekerja 25–45 menit, lalu jeda.</b> Jeda singkat lebih efektif daripada memaksakan diri berjam-jam.</li>
+              <li><b>Gerakkan badan 10–15 menit</b> sehari, seperti berjalan kaki setelah Subuh.</li>
+              <li><b>Makan teratur</b>, termasuk sarapan, meski sedang dikejar tenggat.</li>
+            </ul>
+          </div>
+        </details>
+      </article>
+
+      <article class="read" data-tag="Kecemasan">
+        <div class="tag">Kecemasan <span>2 menit</span></div>
+        <h4>Grounding 5-4-3-2-1 saat panik</h4>
+        <p>Teknik singkat untuk menarik perhatian kembali ke saat ini ketika pikiran berputar tanpa henti.</p>
+        <details><summary>Baca selengkapnya</summary>
+          <div class="rbody">
+            <p>Pelan-pelan, sebutkan dalam hati:</p>
+            <ol>
+              <li><b>5</b> hal yang kamu lihat di sekitarmu</li>
+              <li><b>4</b> hal yang bisa kamu sentuh</li>
+              <li><b>3</b> suara yang kamu dengar</li>
+              <li><b>2</b> aroma yang kamu cium</li>
+              <li><b>1</b> nikmat Allah yang kamu syukuri saat ini</li>
+            </ol>
+            <p>Lanjutkan dengan <a href="#napas">latihan napas dengan dzikir</a> di bawah.</p>
+          </div>
+        </details>
+      </article>
+
+      <article class="read" data-tag="Bantuan">
+        <div class="tag">Bantuan <span>2 menit</span></div>
+        <h4>Kapan perlu meminta bantuan</h4>
+        <p>Meminta bantuan adalah bagian dari ikhtiar, bukan tanda kurang iman.</p>
+        <details><summary>Baca selengkapnya</summary>
+          <div class="rbody">
+            <p>Pertimbangkan untuk <a href="#daftar">mendaftar konseling</a> jika selama lebih dari dua pekan kamu:</p>
+            <ul>
+              <li>sulit tidur atau makan,</li>
+              <li>tidak sanggup menjalankan kuliah dan aktivitas harian,</li>
+              <li>menarik diri dari teman dan keluarga,</li>
+              <li>merasa hampa atau putus asa hampir setiap hari.</li>
+            </ul>
+            <p>Jika muncul pikiran untuk menyakiti diri, jangan menunggu. Segera <a href="#krisis">hubungi layanan darurat</a> atau orang terdekat yang kamu percaya.</p>
+          </div>
+        </details>
+      </article>
+    </div>
+
+    <div class="breath" id="napas">
+      <div>
+        <span class="kick">Latihan 4–4–6</span>
+        <h3>Napas tenang dengan dzikir</h3>
+        <p>Tarik napas 4 detik, tahan 4 detik, lalu hembuskan perlahan 6 detik sambil melafalkan dzikir dalam hati. Hembusan yang lebih panjang membantu tubuh lebih rileks. Ikuti gerak lingkaran di samping.</p>
+        <span class="f">Durasi</span>
+        <div class="chips" id="bDur"></div>
+        <div class="cta" style="margin-top:22px">
+          <button class="btn gold" id="bStart" type="button">Mulai latihan</button>
+          <button class="btn line" id="bReset" type="button">Ulangi</button>
+        </div>
+        <p class="bstat" id="bStat" aria-live="polite"></p>
+      </div>
+      <div class="orb-stage">
+        <div class="orb-wrap" aria-hidden="true"><div class="orb" id="orb"></div></div>
+        <p class="phase" id="bPhase">Siap</p>
+        <p class="dz" id="bDz" lang="ar">سُبْحَانَ اللّٰهِ</p>
+        <p class="dzl" id="bDzl">Duduk dengan nyaman, lalu tekan Mulai</p>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div><h3>Doa penenang hati</h3><p>Doa dari Al-Qur'an dan hadis untuk situasi yang sering dialami mahasiswa.</p></div>
+    </div>
+    <div class="doas">
+      <div class="doa">
+        <span class="when">Sebelum bimbingan, presentasi, atau sidang</span>
+        <p class="ar" lang="ar">رَبِّ اشْرَحْ لِي صَدْرِي ۝ وَيَسِّرْ لِي أَمْرِي ۝ وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي ۝ يَفْقَهُوا قَوْلِي</p>
+        <p class="tr">"Ya Tuhanku, lapangkanlah dadaku, mudahkanlah urusanku, dan lepaskanlah kekakuan dari lidahku, agar mereka memahami perkataanku."</p>
+        <div class="foot"><span class="src">QS. Thaha: 25–28</span><button class="copy" type="button" data-copy>Salin doa</button></div>
+      </div>
+      <div class="doa">
+        <span class="when">Saat tugas terasa berat</span>
+        <p class="ar" lang="ar">اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا</p>
+        <p class="tr">"Ya Allah, tidak ada yang mudah kecuali yang Engkau jadikan mudah, dan Engkau menjadikan kesulitan mudah jika Engkau menghendakinya."</p>
+        <div class="foot"><span class="src">HR. Ibnu Hibban</span><button class="copy" type="button" data-copy>Salin doa</button></div>
+      </div>
+      <div class="doa">
+        <span class="when">Saat gelisah dan malas menumpuk</span>
+        <p class="ar" lang="ar">اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْبُخْلِ وَالْجُبْنِ، وَضَلَعِ الدَّيْنِ، وَغَلَبَةِ الرِّجَالِ</p>
+        <p class="tr">"Ya Allah, aku berlindung kepada-Mu dari kegelisahan dan kesedihan, dari kelemahan dan kemalasan, dari sifat kikir dan pengecut, dari lilitan utang dan tekanan orang lain."</p>
+        <div class="foot"><span class="src">HR. Bukhari</span><button class="copy" type="button" data-copy>Salin doa</button></div>
+      </div>
+      <div class="doa">
+        <span class="when">Setelah berusaha, saat menunggu hasil</span>
+        <p class="ar" lang="ar">حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ</p>
+        <p class="tr">"Cukuplah Allah bagi kami, dan Dia sebaik-baik pelindung."</p>
+        <div class="foot"><span class="src">QS. Ali 'Imran: 173</span><button class="copy" type="button" data-copy>Salin doa</button></div>
+      </div>
+    </div>
+
+    <p class="edu-note">Materi ini bersifat edukatif dan tidak menggantikan konseling. Jika keluhanmu berat atau berlangsung lama, <a href="#daftar" style="color:var(--green);font-weight:700">daftar sesi konseling</a>.</p>
+  </div>
+</section>
+
+<section id="etika">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Prinsip layanan</h2>
+    </div>
+    <div class="prin">
+      <div class="card"><h3>Rahasia dan amanah</h3><p>Isi konseling tidak dibagikan kepada dosen, keluarga, atau siapa pun tanpa persetujuanmu, kecuali ada risiko serius terhadap keselamatan.</p></div>
+      <div class="card"><h3>Sukarela</h3><p>Kamu datang atas kemauan sendiri dan boleh berhenti kapan saja. Tidak ada penilaian dan tidak berpengaruh pada nilai akademik.</p></div>
+      <div class="card"><h3>Menguatkan, bukan menghakimi</h3><p>Pendekatan psikologis dipadukan dengan nilai-nilai Islam seperti sabar, tawakal, dan husnuzan untuk membantumu mandiri.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head"><h2>Tanya jawab</h2></div>
+    <div class="faq">
+      <details><summary>Apakah layanan ini berbayar?</summary><p>Tidak. Layanan konseling ini gratis untuk mahasiswa.</p></details>
+      <details><summary>Apakah dosen atau orang tua akan tahu saya ikut konseling?</summary><p>Tidak, kecuali kamu sendiri yang memintanya. Pengecualian hanya berlaku jika ada risiko serius terhadap keselamatan dirimu atau orang lain; dalam kondisi itu konselor akan membicarakannya denganmu lebih dulu bila memungkinkan.</p></details>
+      <details><summary>Saya tidak nyaman bicara lewat video. Bagaimana?</summary><p>Kamu bisa memilih sesi lewat WhatsApp, baik chat maupun telepon suara. Pilih media yang paling membuatmu nyaman di formulir pendaftaran.</p></details>
+      <details><summary>Berapa lama sampai jadwal saya dikonfirmasi?</summary><p>Admin akan membalas pada jam layanan, biasanya dalam 1×24 jam hari kerja. Jika kondisimu mendesak, sebutkan hal itu dalam pesan agar diprioritaskan.</p></details>
+      <details><summary>Bagaimana jika masalah saya di luar kemampuan konselor?</summary><p>Konselor akan membantu merujukmu ke psikolog atau layanan kesehatan jiwa yang sesuai, dan tetap mendampingi prosesnya.</p></details>
+    </div>
+  </div>
+</section>
+
+<section id="krisis" style="padding-top:0">
+  <div class="wrap">
+    <div class="crisis">
+      <div>
+        <h3>Butuh bantuan segera?</h3>
+        <p>Layanan ini bukan layanan darurat dan tidak aktif 24 jam. Jika kamu sedang dalam krisis, merasa tidak aman, atau berpikir untuk menyakiti diri, segera hubungi layanan di samping atau orang terdekat yang kamu percaya.</p>
+      </div>
+      <div class="nums">
+        <a href="tel:119"><span>Kemenkes, telepon lalu tekan 8</span>Healing119: 119 ext. 8</a>
+        <a href="https://www.healing119.id" target="_blank" rel="noopener"><span>Chat dan telepon daring</span>healing119.id</a>
+        <a href="tel:112"><span>Gawat darurat umum</span>112</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span id="footUnit"></span>
+    <a href="#beranda">Kembali ke atas</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+/* =========================================================
+   PENGATURAN — ubah bagian ini sesuai data layanan kampus
+   ========================================================= */
+const CONFIG = {
+  unitName: "Layanan Konseling STAIFA Pamekasan",
+  whatsapp: "6285602466517",              // nomor admin, format 628xxxxxxxxxx (tanpa + dan spasi)
+  googleForm: "",            // opsional: tautan Google Form pendaftaran
+  appUrl: "https://claude.ai/artifact/PnrmvpRzHcPfvAosY3uTSj",
+  // day: 1=Senin ... 5=Jumat, 6=Sabtu
+  counselors: [
+    { name:"Ach. Faizal Umam As-Shobri, S.Sos.", title:"Konselor", photo:"data:image/jpeg;base64,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", focus:["Akademik","Skripsi","CBT Islami"], schedule:[{day:1,times:["09.00","13.00"]},{day:3,times:["09.00","13.00"]}] },
+    { name:"Fiqri Mafruhan, S.Pd.", title:"Konselor", photo:"data:image/jpeg;base64,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", focus:["Karier","Relasi sosial"], schedule:[{day:4,times:["01.00","22.00"]},{day:5,times:["12.00"]}] }
+  ]
+};
+/* ========================================================= */
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const isPh = s => /^\[.*\]$/.test(s);
+const txt = s => isPh(s) ? `<span class="ph">${esc(s)}</span>` : esc(s);
+const DAYS = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+
+$("#unitName").innerHTML = txt(CONFIG.unitName);
+$("#footUnit").innerHTML = `As-Shobri · ${txt(CONFIG.unitName)}`;
+$("#appBtn").href = CONFIG.appUrl;
+if(CONFIG.googleForm){ const a=$("#formAlt"); a.href=CONFIG.googleForm; a.hidden=false; }
+
+/* counselor cards */
+const initials = n => isPh(n) ? "K" : n.replace(/^(Dr|Drs|Ust|Ustadzah)\.?\s+/i,"").split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+$("#team").innerHTML = CONFIG.counselors.map(c=>`<div class="person">
+  <div class="top">${c.photo ? `<img class="ini" src="${esc(c.photo)}" alt="Foto ${esc(c.name)}" loading="lazy" onerror="this.outerHTML='<div class=&quot;ini&quot;>${esc(initials(c.name))}</div>'">` : `<div class="ini">${esc(initials(c.name))}</div>`}<div><b>${txt(c.name)}</b><small>${txt(c.title)}</small></div></div>
+  <div class="focus">${c.focus.map(f=>`<span>${esc(f)}</span>`).join("")}</div>
+  <div class="sched">${c.schedule.map(s=>`<b>${DAYS[s.day]}</b> ${s.times.join(", ")}`).join(" · ")} WIB</div>
+</div>`).join("");
+
+/* form state */
+const st = {service:"Konseling individual", counselor:-1, slot:null, media:"Zoom"};
+const SERVICES = ["Konseling individual","Program CBT Islami 8 sesi","Konsultasi singkat via chat"];
+const MEDIA = ["Zoom","Google Meet","WhatsApp video","WhatsApp telepon","WhatsApp chat"];
+function chip(label, sel, data, sub){ return `<button type="button" class="chip" data-v="${esc(data)}" aria-pressed="${sel}">${esc(label)}${sub?`<small>${esc(sub)}</small>`:""}</button>`; }
+function cName(i){ return i<0 ? "Siapa saja yang tersedia" : CONFIG.counselors[i].name; }
+
+function slotsFor(i){
+  const list = i<0 ? CONFIG.counselors.map((c,k)=>k) : [i];
+  const out = []; const now = new Date();
+  for(let d=0; d<14; d++){
+    const day = new Date(now.getFullYear(), now.getMonth(), now.getDate()+d);
+    list.forEach(k=>{
+      CONFIG.counselors[k].schedule.filter(s=>s.day===day.getDay()).forEach(s=>s.times.forEach(t=>{
+        const [h,m]=t.split(".").map(Number);
+        const dt=new Date(day); dt.setHours(h,m||0,0,0);
+        if(dt-now > 3*3600e3) out.push({dt, t, k});
+      }));
+    });
+  }
+  out.sort((a,b)=>a.dt-b.dt);
+  return out;
+}
+function fmtDate(dt){ return dt.toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long"}); }
+
+function render(){
+  $("#fService").innerHTML = SERVICES.map(s=>chip(s, st.service===s, s)).join("");
+  $("#fCounselor").innerHTML = chip("Siapa saja", st.counselor<0, -1, "Yang paling cepat tersedia") + CONFIG.counselors.map((c,i)=>chip(isPh(c.name)?`Konselor ${i+1}`:c.name, st.counselor===i, i, c.focus.slice(0,2).join(", "))).join("");
+  const sl = slotsFor(st.counselor);
+  $("#fSlot").innerHTML = sl.length ? sl.map((s,j)=>chip(fmtDate(s.dt), st.slot && st.slot.key===`${+s.dt}-${s.k}`, j, `${s.t} WIB${st.counselor<0?` · ${isPh(CONFIG.counselors[s.k].name)?"Konselor "+(s.k+1):CONFIG.counselors[s.k].name}`:""}`)).join("") : `<p class="hint">Belum ada jadwal dalam 14 hari ke depan.</p>`;
+  $("#fSlot")._slots = sl;
+  $("#fMedia").innerHTML = MEDIA.map(m=>chip(m, st.media===m, m)).join("");
+  summary();
+}
+function summary(){
+  const v = id => $(id).value.trim();
+  const slotTxt = st.slot ? `${fmtDate(st.slot.dt)}, ${st.slot.t} WIB` : "Belum dipilih";
+  const who = st.slot ? CONFIG.counselors[st.slot.k].name : cName(st.counselor);
+  const rows = [["Nama", v("#fName")||"–"],["NIM", v("#fNim")||"–"],["Layanan", st.service],["Konselor", who],["Jadwal", slotTxt],["Media", st.media]];
+  $("#sum").innerHTML = rows.map(([a,b])=>`<dt>${a}</dt><dd>${esc(b)}</dd>`).join("");
+}
+$("#fService").addEventListener("click", e=>{ const b=e.target.closest(".chip"); if(!b) return; st.service=b.dataset.v; render(); });
+$("#fCounselor").addEventListener("click", e=>{ const b=e.target.closest(".chip"); if(!b) return; st.counselor=+b.dataset.v; st.slot=null; render(); });
+$("#fSlot").addEventListener("click", e=>{ const b=e.target.closest(".chip"); if(!b) return; const s=$("#fSlot")._slots[+b.dataset.v]; st.slot={...s, key:`${+s.dt}-${s.k}`}; render(); });
+$("#fMedia").addEventListener("click", e=>{ const b=e.target.closest(".chip"); if(!b) return; st.media=b.dataset.v; render(); });
+["#fName","#fNim","#fProdi","#fTopic"].forEach(id=>$(id).addEventListener("input", summary));
+
+$("#fSend").addEventListener("click", ()=>{
+  const v = id => $(id).value.trim();
+  const err = $("#fErr");
+  if(!v("#fName") || !v("#fNim") || !v("#fProdi")){ err.textContent="Lengkapi nama, NIM, dan program studi."; (!v("#fName")?$("#fName"):!v("#fNim")?$("#fNim"):$("#fProdi")).focus(); return; }
+  if(!st.slot){ err.textContent="Pilih salah satu jadwal."; $("#fSlot").scrollIntoView({block:"center"}); return; }
+  if(!$("#fConsent").checked){ err.textContent="Centang persetujuan sebelum mengirim."; $("#fConsent").focus(); return; }
+  if(!CONFIG.whatsapp){ err.textContent="Nomor WhatsApp admin belum diatur oleh pengelola website."; return; }
+  err.textContent="";
+  const msg = [
+    "Assalamu'alaikum, saya ingin mendaftar layanan konseling.",
+    "",
+    `Nama: ${v("#fName")}`,
+    `NIM: ${v("#fNim")}`,
+    `Prodi/semester: ${v("#fProdi")}`,
+    `Topik umum: ${v("#fTopic")||"-"}`,
+    `Layanan: ${st.service}`,
+    `Konselor: ${CONFIG.counselors[st.slot.k].name}`,
+    `Jadwal: ${fmtDate(st.slot.dt)}, ${st.slot.t} WIB`,
+    `Media: ${st.media}`,
+    "",
+    "Saya menyetujui ketentuan kerahasiaan layanan."
+  ].join("\n");
+  window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+});
+
+render();
+
+/* ===== Psikoedukasi: saring bacaan ===== */
+const TAGS = ["Semua","Kecemasan","Pola pikir","Spiritual","Keseharian","Bantuan"];
+let curTag = "Semua";
+function renderFilter(){
+  $("#eduFilter").innerHTML = TAGS.map(t=>chip(t, curTag===t, t)).join("");
+  document.querySelectorAll("#reads .read").forEach(a=>{ a.hidden = !(curTag==="Semua" || a.dataset.tag===curTag); });
+}
+$("#eduFilter").addEventListener("click", e=>{ const b=e.target.closest(".chip"); if(!b) return; curTag=b.dataset.v; renderFilter(); });
+renderFilter();
+
+/* ===== Latihan napas 4-4-6 dengan dzikir ===== */
+const DZ = [
+  {ar:"سُبْحَانَ اللّٰهِ", lt:"Subhanallah · Mahasuci Allah"},
+  {ar:"اَلْحَمْدُ لِلّٰهِ", lt:"Alhamdulillah · Segala puji bagi Allah"},
+  {ar:"لَا إِلٰهَ إِلَّا اللّٰهُ", lt:"La ilaha illallah · Tiada Tuhan selain Allah"},
+  {ar:"اَللّٰهُ أَكْبَرُ", lt:"Allahu akbar · Allah Mahabesar"},
+  {ar:"أَسْتَغْفِرُ اللّٰهَ", lt:"Astaghfirullah · Aku memohon ampun kepada Allah"}
+];
+const PH = [
+  {label:"Tarik napas", s:4, sc:1.85},
+  {label:"Tahan sejenak", s:4, sc:1.85},
+  {label:"Hembuskan perlahan", s:6, sc:1}
+];
+const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+const orb = $("#orb");
+const bs = {dur:3, run:false, started:false, timer:null, pi:0, left:0, cycle:0, total:180};
+const fmt = s => Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+
+function bStat(){ $("#bStat").textContent = `Siklus selesai: ${bs.cycle} · Sisa waktu ${fmt(Math.max(bs.total,0))}`; }
+function bDur(){
+  $("#bDur").innerHTML = [1,3,5].map(m=>chip(`${m} menit`, bs.dur===m, m)).join("");
+  $("#bDur").querySelectorAll(".chip").forEach(c=>c.disabled = bs.run);
+}
+function showPhase(){
+  const p = PH[bs.pi], d = DZ[bs.cycle % DZ.length];
+  $("#bPhase").textContent = `${p.label} · ${bs.left}`;
+  $("#bDz").textContent = d.ar;
+  $("#bDzl").textContent = bs.pi===2 ? `Lafalkan dalam hati: ${d.lt}` : d.lt;
+}
+function enterPhase(){
+  const p = PH[bs.pi];
+  bs.left = p.s;
+  orb.style.transitionDuration = reduceMotion ? "0s" : `${p.s}s`;
+  orb.style.transform = `scale(${reduceMotion ? 1 : p.sc})`;
+  showPhase();
+}
+function bReset(){
+  clearInterval(bs.timer);
+  Object.assign(bs, {run:false, started:false, pi:0, left:0, cycle:0, total:bs.dur*60});
+  orb.style.transitionDuration = reduceMotion ? "0s" : "1s";
+  orb.style.transform = "scale(1)";
+  $("#bPhase").textContent = "Siap";
+  $("#bDz").textContent = DZ[0].ar;
+  $("#bDzl").textContent = "Duduk dengan nyaman, lalu tekan Mulai";
+  $("#bStart").textContent = "Mulai latihan";
+  bDur(); bStat();
+}
+function bFinish(){
+  clearInterval(bs.timer); bs.run=false;
+  orb.style.transitionDuration = reduceMotion ? "0s" : "2s";
+  orb.style.transform = "scale(1)";
+  $("#bPhase").textContent = "Latihan selesai";
+  $("#bDz").textContent = "اَلْحَمْدُ لِلّٰهِ";
+  $("#bDzl").textContent = "Perhatikan perasaanmu sekarang dibanding sebelum latihan.";
+  $("#bStart").textContent = "Mulai lagi";
+  bDur(); bStat();
+}
+function bTick(){
+  bs.total--; bs.left--;
+  if(bs.total<=0){ if(bs.pi===2) bs.cycle++; bFinish(); return; }
+  if(bs.left<=0){
+    bs.pi = (bs.pi+1) % PH.length;
+    if(bs.pi===0) bs.cycle++;
+    enterPhase();
+  } else showPhase();
+  bStat();
+}
+$("#bStart").addEventListener("click", ()=>{
+  if(bs.run){
+    clearInterval(bs.timer); bs.run=false;
+    $("#bStart").textContent = "Lanjutkan";
+    $("#bPhase").textContent = "Dijeda";
+    bDur(); return;
+  }
+  if(bs.total<=0) bReset();
+  if(!bs.started){ bs.started=true; enterPhase(); }
+  bs.run = true;
+  bs.timer = setInterval(bTick, 1000);
+  $("#bStart").textContent = "Jeda";
+  bDur();
+});
+$("#bReset").addEventListener("click", bReset);
+$("#bDur").addEventListener("click", e=>{ const b=e.target.closest(".chip"); if(!b || bs.run) return; bs.dur=+b.dataset.v; bReset(); });
+bReset();
+
+/* ===== Salin doa ===== */
+document.querySelectorAll("[data-copy]").forEach(btn=>btn.addEventListener("click", ()=>{
+  const card = btn.closest(".doa");
+  const text = `${card.querySelector(".ar").textContent}\n\n${card.querySelector(".tr").textContent}\n(${card.querySelector(".src").textContent})`;
+  const done = msg => { btn.textContent = msg; setTimeout(()=>btn.textContent="Salin doa", 2200); };
+  const fallback = () => {
+    const r = document.createRange(); r.selectNodeContents(card.querySelector(".ar"));
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    done("Teks dipilih, salin manual");
+  };
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(()=>done("Tersalin"), fallback);
+    } else fallback();
+  }catch(_){ fallback(); }
+}));
+})();
+</script>
+</body>
+</html>
